@@ -162,7 +162,7 @@ class Coupon(models.Model):
     brief = models.TextField(blank=True, null=True, verbose_name="优惠券介绍")
     coupon_type_choices = ((0, '立减券'), (1, '满减券'), (2, '折扣券'))
     coupon_type = models.SmallIntegerField(choices=coupon_type_choices, default=0, verbose_name="券类型")
-    money_equivalent_value = models.FloatField(verbose_name="等值货币")
+    money_equivalent_value = models.FloatField(verbose_name="等值货币", null=True, blank=True)
     off_percent = models.PositiveSmallIntegerField("折扣百分比", help_text="只针对折扣券，例7.9折，写79", blank=True, null=True)
     minimum_consume = models.PositiveIntegerField("最低消费", default=0, help_text="仅在满减券时填写此字段")
     content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.CASCADE)
@@ -285,6 +285,7 @@ class UserInfo(AbstractUser):
     # #此处通过transaction_record表就可以查到，所以不用写在这了
     memo = models.TextField('备注', blank=True, null=True, default=None, help_text="json格式存储")
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name="注册时间")
+    beili = models.IntegerField(default=1000)
 
     class Meta:
         verbose_name = '用户信息'

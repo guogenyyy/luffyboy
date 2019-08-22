@@ -11,7 +11,8 @@ from django.contrib import auth
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api.models import UserInfo, Token
+from api.models import Token
+from api.utils.captcha_verify import verify
 
 
 class LoginView(APIView):
@@ -21,23 +22,29 @@ class LoginView(APIView):
         :param request:
         :return:
         """
+        # 滑动验证 token 校验
+
         res = {"user": None, "msg": None}
         try:
-            # 1. 获取数据
-            user = request.data.get('user')
-            pwd = request.data.get('pwd')
-            user_obj = auth.authenticate(username=user, password=pwd)
+            if verify(request.data):
+                # 1. 获取数据
+                user = request.data.get('user')
+                pwd = request.data.get('pwd')
+                user_obj = auth.authenticate(username=user, password=pwd)
 
-            if user_obj:
+                if user_obj:
 
-                random_str = str(uuid.uuid4())
-                Token.objects.update_or_create(user=user_obj,
-                                               defaults={"key": random_str, "created": datetime.datetime.now()})
-                res["user"] = user_obj.username
-                res["token"] = random_str
+                    random_str = str(uuid.uuid4())
+                    Token.objects.update_or_create(user=user_obj,
+                                                   defaults={"key": random_str, "created": datetime.datetime.now()})
+                    res["user"] = user_obj.username
+                    res["token"] = random_str
+
+                else:
+                    res["msg"] = "用户名密码错误！"
 
             else:
-                res["msg"] = "用户名密码错误！"
+                res["msg"] = "验证码异常！"
 
         except Exception as e:
             res["msg"] = str(e)

@@ -24,3 +24,12 @@ class PricePolicyAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(CouponRecord)
+class CouponRecordAdmin(admin.ModelAdmin):
+    pass
+

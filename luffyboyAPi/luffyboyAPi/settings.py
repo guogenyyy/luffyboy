@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "api.utils.middleware.MiddlewareMixin",
 ]
 
 ROOT_URLCONF = 'luffyboyAPi.urls'
@@ -124,3 +125,14 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'api.UserInfo'
 
 SHOPPINGCAR_KEY = "shoppingcar_%s_%s"
+
+ACCOUNT_KEY = 'account_%s_%s'
+
+GEE_TEST = {
+    "gee_test_access_id": "37ca5631edd1e882721808d35163b3ad",
+    "gee_test_access_key": "7eb11ccf3e0953bdd060ed8b60b0c4f5",
+    "verify_status": True,  # 是否启用滑动验证码验证组件(True表示启用)
+    "not_verify": [
+        "2ba6b08d53a4fd27057a32537e2d55ae",
+    ],  # 不用验证的用户(存放着用户的uid)
+}
