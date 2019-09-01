@@ -71,3 +71,6 @@ fabric.properties
 
 .gitignore
 templates/
+
+
+.vscode/*
