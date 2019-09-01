@@ -11,6 +11,10 @@ class Course(models.Model):
     """
     专题课程
     """
+
+    class Meta:
+        verbose_name_plural = '专题课程'
+
     name = models.CharField(max_length=128, unique=True, verbose_name="模块")
     course_img = models.CharField(max_length=255)
     course_type_choices = ((0, '付费'), (1, 'VIP专享'), (2, '学位课程'))
@@ -36,6 +40,9 @@ class Course(models.Model):
 class CourseDetail(models.Model):
     """课程详情页内容"""
 
+    class Meta:
+        verbose_name_plural = '课程详细页内容'
+
     course = models.OneToOneField("Course", on_delete=models.CASCADE)
     hours = models.IntegerField("课时")
     course_slogan = models.CharField(max_length=125, blank=True, null=True)
@@ -54,6 +61,9 @@ class CourseDetail(models.Model):
 class Teacher(models.Model):
     """讲师、导师表"""
 
+    class Meta:
+        verbose_name_plural = '讲师、导师表'
+
     name = models.CharField(max_length=32)
     role_choices = ((0, '讲师'), (1, '导师'))
     role = models.SmallIntegerField(choices=role_choices, default=0)
@@ -67,7 +77,8 @@ class Teacher(models.Model):
 
 
 class PricePolicy(models.Model):
-    """价格与有课程效期表"""
+    """价格与课程有效期表"""
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # 关联course or degree_course
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -87,6 +98,7 @@ class PricePolicy(models.Model):
 
     class Meta:
         unique_together = ("content_type", 'object_id', "valid_period")
+        verbose_name_plural = '价格与课程有效期表'
 
     def __str__(self):
         return "%s(%s)%s" % (self.content_object, self.get_valid_period_display(), self.price)
@@ -94,6 +106,7 @@ class PricePolicy(models.Model):
 
 class CourseChapter(models.Model):
     """课程章节"""
+
     course = models.ForeignKey("Course", related_name='coursechapters', on_delete=models.CASCADE)
     chapter = models.SmallIntegerField(verbose_name="第几章", default=1)
     name = models.CharField(max_length=128)
@@ -103,6 +116,7 @@ class CourseChapter(models.Model):
 
     class Meta:
         unique_together = ("course", 'chapter')
+        verbose_name_plural = '课程章节'
 
     def __str__(self):
         return "%s:(第%s章)%s" % (self.course, self.chapter, self.name)
@@ -110,6 +124,7 @@ class CourseChapter(models.Model):
 
 class CourseSection(models.Model):
     """课时目录"""
+
     chapter = models.ForeignKey("CourseChapter", related_name='coursesections', on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     order = models.PositiveSmallIntegerField(verbose_name="课时排序", help_text="建议每个课时之间空1至2个值，以备后续插入课时")
@@ -131,6 +146,7 @@ class CourseSection(models.Model):
 
     class Meta:
         unique_together = ('chapter', 'section_link')
+        verbose_name_plural = '课时目录'
 
     def __str__(self):
         return "%s-%s" % (self.chapter, self.name)
@@ -138,6 +154,7 @@ class CourseSection(models.Model):
 
 class OftenAskedQuestion(models.Model):
     """常见问题"""
+
     content_type = models.ForeignKey(ContentType, limit_choices_to={'model__contains': 'course'},
                                      on_delete=models.CASCADE)  # 关联course or degree_course
     object_id = models.PositiveIntegerField()
@@ -158,6 +175,10 @@ class OftenAskedQuestion(models.Model):
 
 class Coupon(models.Model):
     """优惠券生成规则"""
+
+    class Meta:
+        verbose_name_plural = '优惠券生成规则'
+
     name = models.CharField(max_length=64, verbose_name="活动名称")
     brief = models.TextField(blank=True, null=True, verbose_name="优惠券介绍")
     coupon_type_choices = ((0, '立减券'), (1, '满减券'), (2, '折扣券'))
@@ -185,6 +206,10 @@ class Coupon(models.Model):
 
 class CouponRecord(models.Model):
     """优惠券发放、消费纪录"""
+
+    class Meta:
+        verbose_name_plural = '优惠券发放、消费纪录'
+
     coupon = models.ForeignKey("Coupon", on_delete=models.CASCADE)
     account = models.ForeignKey("UserInfo", blank=True, null=True, verbose_name="使用者", on_delete=models.CASCADE)
     status_choices = ((0, '未使用'), (1, '已使用'), (2, '已过期'), (3, '未领取'))
@@ -205,6 +230,10 @@ class CouponRecord(models.Model):
 
 class Order(models.Model):
     """订单"""
+
+    class Meta:
+        verbose_name_plural = '订单'
+
     payment_type_choices = ((0, '微信'), (1, '支付宝'), (2, '优惠码'), (3, '贝里'), (4, '银联'))
     payment_type = models.SmallIntegerField(choices=payment_type_choices)
     payment_number = models.CharField(max_length=128, verbose_name="支付第3方订单号", null=True, blank=True)
@@ -243,6 +272,7 @@ class OrderDetail(models.Model):
     class Meta:
         # unique_together = ("order", 'course')
         unique_together = ("order", 'content_type', 'object_id')
+        verbose_name_plural = '订单详情'
 
 
 ######################################## 用户表 ########################################
